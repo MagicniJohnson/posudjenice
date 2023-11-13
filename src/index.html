@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .btn-holder {
+            background-color: #98ff98; 
+            padding: 10px; 
+            text-align: center; 
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0fff0; 
+        }
+
+        div {
+            text-align: center;
+            position: relative; 
+        }
+
+        #search-bar, #menu, button {
+            margin-top: 10px; 
+            margin-bottom: 10px; 
+            display: inline-block; 
+        }
+
+        #csv-button {
+            position: relative;
+            justify-content: right;
+            top: 10px;
+            right: 10px; 
+            margin-left: 20px; 
+        }
+
+        #json-button {
+            position: relative;
+            top: 10px;
+            right: 10px; 
+            margin-left: 20px; 
+        }
+
+        input[type="text"], select {
+            padding: 8px; 
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script src="datatable.html"></script>
+</head>
+<body>
+    <div class="btn-holder">
+        <input type="text" id="search-bar" placeholder="Search...">
+        <select id="menu">
+            <option value="word.word_cro">Croatian word</option>
+            <option value="word.word_orig_lang">Original word</option>
+            <option value="definition.definition_cro">Croatian definition</option>
+            <option value="definition.definition_orig_lang">Original definition</option>
+            <option value="type">Type</option>
+            <option value="type_word">Part of speech</option>
+            <option value="gender">Gender</option>
+        </select>
+        <button onclick="sendRequest()">Search</button>
+        <div>
+            <a href="posudjenice.json" download="loanword.json"><button id="json-button" type="submit">JSON</button></a>
+            <a href="posudjenice.csv" download="loandowrd.csv"><button id="csv-button">CSV</button></a>
+        </div>
+    </div>
+
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Word (Croatian)</th>
+                <th>Word (Original Language)</th>
+                <th>Definition (Croatian)</th>
+                <th>Definition (Original Language)</th>
+                <th>Type</th>
+                <th>Example</th>
+                <th>Original Language</th>
+                <th>Word Type</th>
+                <th>Gender</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</body>
+</html>

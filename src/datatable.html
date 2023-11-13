@@ -1,0 +1,109 @@
+
+function generateTable(data) {
+    //console.log("Generating table...");
+    //console.log(data);
+    const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = "";
+    jsonarray = JSON.parse(data)
+    jsonarray.forEach(item => {
+        const row = tableBody.insertRow();
+
+        // Define the properties to display in the table
+        const propertiesToDisplay = [
+            'word.word_cro',
+            'word.word_orig_lang',
+            'definition.definition_cro',
+            'definition.definition_orig_lang',
+            'type',
+            'example',
+            'orig_lang',
+            'type_word',
+            'gender'
+        ];
+
+        propertiesToDisplay.forEach(property => {
+            const cell = row.insertCell();
+            const nestedProperties = property.split('.');
+            let nestedValue = item;
+
+            nestedProperties.forEach(nestedProperty => {
+                nestedValue = nestedValue[nestedProperty];
+            });
+
+            cell.textContent = nestedValue;
+        });
+    });
+}
+
+
+    async function sendRequest() {
+        const searchTerm = document.getElementById('search-bar').value;
+        const selectedField = document.getElementById('menu').value;
+    
+        try {
+            const response = await fetch('http://localhost:5000/searchup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    searchTerm: searchTerm,
+                    selectedField: selectedField,
+                }),
+            });
+            console.log(response);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            const data = await response.json();
+            generateTable(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+    
+
+    async function fetchDataAndDownload() {
+        try {
+            const response = await fetch('posudjenice.json');
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+            }
+    
+            const jsonData = await response.json();
+    
+            // Download the JSON data
+            downloadJson(jsonData);
+    
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+    
+    function downloadJson(data) {
+        const jsonString = JSON.stringify(data, null, 2);
+    
+        const blob = new Blob([jsonString], { type: 'application/json' });
+    
+
+        const link = document.createElement('a');
+    
+        const blobUrl = URL.createObjectURL(blob);
+    
+
+        link.setAttribute('download', 'posudjenice.json');
+        link.setAttribute('href', blobUrl);
+    
+        document.body.appendChild(link);
+    
+
+        link.click();
+        document.body.removeChild(link);
+    
+        URL.revokeObjectURL(blobUrl);
+    }
+    
+
+    
+    
