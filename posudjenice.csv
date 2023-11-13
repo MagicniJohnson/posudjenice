@@ -1,11 +1,11 @@
-_id,rijec.rijec_hrv,rijec.rijec_izv_jez,definicija.definicija_hrv,definicija.definicija_izv_jez,tip_pos,primj_kor,izv_jez,vrsta_rijeci,rod
-ObjectId(65412bcad909fe9f7490e4a4),lumbrela,ombrello,kišobran,kišobran,usvojenica,"Padala je kiša, a nisam imala lumbrelu sa sobom.",talijanski,imenica,ž
-ObjectId(65412bcad909fe9f7490e4a5),čak,çak,"dapače, štoviše; za isticanje onome što je rečeno","daleko, sve do",usvojenica,Bilo je čak dobro.,turski,čestica,NULL
-ObjectId(65412bcad909fe9f7490e4a6),rendgen,röntgen,aparat za snimanje pomoću rendgenskih zraka,Röntgen je prezime,eponim,Rendgen je pokazao da je slomio ključnu kost.,njemački,imenica,m
-ObjectId(65412bcad909fe9f7490e4a7),auto,automobile,motorno vozilo na dvije osovine i četiri kotača,pokretljiv vlastitom snagom,usvojenica,Auto se pokvarilo na autocesti.,francuski,imenica,m
-ObjectId(65412bcad909fe9f7490e4a8),tajfun,tai fung (台風),tropski ciklon s vjetrovima orkanske snage,"veliki vjetar, tropska oluja",egzotizam,Tajfun je pogodio otok Kjušu prošli tjedan.,kineski,imenica,m
-ObjectId(65412bcad909fe9f7490e4a9),klaun,clown,"zabavljač u cirkusu; pren. neodgovorna osoba, šaljivdžija","zabavljač u cirkusu; pren. šarlatan, budala",tuđica,Klaun Biboo zabavljao je djecu na Markovu rođendanu.,engleski,imenica,m
-ObjectId(65412bcad909fe9f7490e4aa),šjor,sior,gospodin,gospodin; način obraćanja prema višem staležu,tuđica,Šjor Šime otišao je na pučinu.,"[""talijanski"",""mletački""]",imenica,m
-ObjectId(65412bcad909fe9f7490e4ab),frižider,frigidaire,hladnjak,hladan,tuđica,"Ne zaboravljaj zatvarati vrata frižidera, ne zatvaraju se sama od sebe!",francuski,imenica,m
-ObjectId(65412bcad909fe9f7490e4ac),pajdo,padas,"drug, sudrug, kompanjon",suputnik,usvojenica,"Nismo se dugo vidjeli, pajdo moj stari!","[""mađarski"",""perzijski""]",imenica,m
-ObjectId(65412bcad909fe9f7490e4ad),hajde,haydi,"za poticanje, daj!, idi!, ajde","požuri!, idi!",usvojenica,"Hajde brže, ne želim zakasniti.",turski,usklik,NULL
+_id/$oid,rijec/rijec_hrv,rijec/rijec_izv_jez,definicija/definicija_hrv,definicija/definicija_izv_jez,tip_pos,primj_kor,izv_jez/0,vrsta_rijeci,rod,izv_jez/1
+65412bcad909fe9f7490e4a4,lumbrela,ombrello,kišobran,kišobran,usvojenica,"Padala je kiša, a nisam imala lumbrelu sa sobom.",talijanski,imenica,ž,
+65412bcad909fe9f7490e4a5,čak,çak,"dapače, štoviše; za isticanje onome što je rečeno","daleko, sve do",usvojenica,Bilo je čak dobro.,turski,čestica,NULL,
+65412bcad909fe9f7490e4a6,rendgen,röntgen,aparat za snimanje pomoću rendgenskih zraka,Röntgen je prezime,eponim,Rendgen je pokazao da je slomio ključnu kost.,njemački,imenica,m,
+65412bcad909fe9f7490e4a7,auto,automobile,motorno vozilo na dvije osovine i četiri kotača,pokretljiv vlastitom snagom,usvojenica,Auto se pokvarilo na autocesti.,francuski,imenica,m,
+65412bcad909fe9f7490e4a8,tajfun,tai fung (台風),tropski ciklon s vjetrovima orkanske snage,"veliki vjetar, tropska oluja",egzotizam,Tajfun je pogodio otok Kjušu prošli tjedan.,kineski,imenica,m,
+65412bcad909fe9f7490e4a9,klaun,clown,"zabavljač u cirkusu; pren. neodgovorna osoba, šaljivdžija","zabavljač u cirkusu; pren. šarlatan, budala",tuđica,Klaun Biboo zabavljao je djecu na Markovu rođendanu.,engleski,imenica,m,
+65412bcad909fe9f7490e4aa,šjor,sior,gospodin,gospodin; način obraćanja prema višem staležu,tuđica,Šjor Šime otišao je na pučinu.,talijanski,imenica,m,mletački
+65412bcad909fe9f7490e4ab,frižider,frigidaire,hladnjak,hladan,tuđica,"Ne zaboravljaj zatvarati vrata frižidera, ne zatvaraju se sama od sebe!",francuski,imenica,m,
+65412bcad909fe9f7490e4ac,pajdo,padas,"drug, sudrug, kompanjon",suputnik,usvojenica,"Nismo se dugo vidjeli, pajdo moj stari!",mađarski,imenica,m,perzijski
+65412bcad909fe9f7490e4ad,hajde,haydi,"za poticanje, daj!, idi!, ajde","požuri!, idi!",usvojenica,"Hajde brže, ne želim zakasniti.",turski,usklik,NULL,
