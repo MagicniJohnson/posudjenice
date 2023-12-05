@@ -3,7 +3,7 @@ A dataset of loanwords in the Croatian language including language of origin, de
 The dataset is in the Croatian language.
 
 # Release
-Release 1.0.
+Release 2.1.
 
 # Author
 The author is *[Mihael Radeljić](https://github.com/MagicniJohnson)*.
