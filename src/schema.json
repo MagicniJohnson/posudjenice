@@ -1,0 +1,81 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$id": "src/posudjenice.json",
+    "type": "object",
+    "properties": {
+      "_id": {
+        "type": "object",
+        "properties": {
+          "$oid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "$oid"
+        ]
+      },
+      "word": {
+        "type": "object",
+        "properties": {
+          "word_cro": {
+            "type": "string"
+          },
+          "word_orig_lang": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "word_cro",
+          "word_orig_lang"
+        ]
+      },
+      "type": {
+        "type": "string"
+      },
+      "definition": {
+        "type": "object",
+        "properties": {
+          "definition_cro": {
+            "type": "string"
+          },
+          "definition_orig_lang": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "definition_cro",
+          "definition_orig_lang"
+        ]
+      },
+      "example": {
+        "type": "string"
+      },
+      "orig_lang": {
+        "type": "array",
+        "items": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "type_word": {
+        "type": "string"
+      },
+      "gender": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "_id",
+      "word",
+      "type",
+      "definition",
+      "example",
+      "orig_lang",
+      "type_word",
+      "gender"
+    ]
+  }

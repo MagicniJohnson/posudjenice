@@ -1,69 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <style>
-        .btn-holder {
-            background-color: #98ff98; 
-            padding: 10px; 
-            text-align: center; 
-        }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f0fff0; 
-        }
-
-        div {
-            text-align: center;
-            position: relative; 
-        }
-
-        #search-bar, #menu, button {
-            margin-top: 10px; 
-            margin-bottom: 10px; 
-            display: inline-block; 
-        }
-
-        #csv-button {
-            position: relative;
-            justify-content: right;
-            top: 10px;
-            right: 10px; 
-            margin-left: 20px; 
-        }
-
-        #json-button {
-            position: relative;
-            top: 10px;
-            right: 10px; 
-            margin-left: 20px; 
-        }
-
-        input[type="text"], select {
-            padding: 8px; 
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css" type="text/css">
     <script src="datatable.html"></script>
+    <meta charset="utf-8"/>
+    <meta name="author" content="Mihael Radeljic" />
+    <meta name="descriptions" content="An datapoint consists of a loanword in Croatian and its language of origin, 
+    its definition in both croatian and language of origin, the language of origin, 
+    type of loanword, part of speech and grammatical gender (if the word is a noun). 
+    Also, the type of loanword is also given in type, for more information go to: https://github.com/MagicniJohnson/posudjenice/blob/main/README.md ." />
+
+    <title>Posuđenice</title>
 </head>
 <body>
     <div class="btn-holder">
         <input type="text" id="search-bar" placeholder="Search...">
         <select id="menu">
+            <option value="wildcard">Wildcard (All)</option>
             <option value="word.word_cro">Croatian word</option>
             <option value="word.word_orig_lang">Original word</option>
             <option value="definition.definition_cro">Croatian definition</option>
@@ -74,8 +27,14 @@
         </select>
         <button onclick="sendRequest()">Search</button>
         <div>
-            <a href="posudjenice.json" download="loanword.json"><button id="json-button" type="submit">JSON</button></a>
-            <a href="posudjenice.csv" download="loandowrd.csv"><button id="csv-button">CSV</button></a>
+            <div> 
+                <a href="posudjenice.json" download="loanword.json"><button id="json-button" type="submit">JSON</button></a>
+                <a href="posudjenice.csv" download="loanword.csv"><button id="csv-button">CSV</button></a>
+                <a href="schema.json" download="schema.json"><button id="csv-button">Schema</button></a>
+                <button onclick="downloadObjectAsJson()" id="csv-button">JSON search download</button>
+                <button onclick="downloadObjectAsCSV()" id="csv-button">CSV search download</button>
+
+            </div>
         </div>
     </div>
 
