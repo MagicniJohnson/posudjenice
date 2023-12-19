@@ -13,6 +13,62 @@
     <title>Posuđenice</title>
 </head>
 <body>
+    <div id="up-track">Search for loanwords!</div>
+    <div>
+        <div>
+            <form id="getForm>
+                <label for="resourceInput">Enter a croatian word</label>
+                <input type="text" id="resourceInput" placeholder="Input something..." name="resourceInput"></input>
+                <button type="button" onclick="getCroWord()">GET</button>
+            </form>
+        </div>
+        <div>
+            <span>Enter a new example sentence</span>
+            <form id="putForm">
+                <input type="text" id="word.word_cro" placeholder="Input a Croatian word" name="word.word_cro"></input>
+                <input type="text" id="example" placeholder="Input a new example sentence" name="example"></input>           
+                <button type="button" onclick="putCroWord()">PUT</button>
+            </form>
+        </div>
+        <div>
+            <form id="deleteForm>
+                <label for="deleteInput">Enter a croatian word</label>
+                <input type="text" id="deleteInput" placeholder="Input something..." name="deleteInput"></input>
+                <button type="button" onclick="deleteCroWord()">DEL</button>
+            </form>     
+        </div>
+        <div>
+            <span>Input a new entry</span>
+            <form id="postForm">
+                <input type="text" name="word.word_cro" placeholder="Word (Croatian)"></input>
+                <input type="text" name="word.word_orig_lang" placeholder="Word (Original Language)"></input>
+                <input type="text" name="definition.definition_cro" placeholder="Definition (Croatian)">
+                <input type="text" name="definition.definition_orig_lang" placeholder="Definition (Original Language)">
+                <input type="text" name="type" placeholder="Type of loanword">
+                <input type="text" name="example" placeholder="Example sentence">
+                <input type="text" name="orig_lang" placeholder="Language of origin">
+                <input type="text" name="type_word" placeholder="Part of speech">
+                <input type="text" name="gender" placeholder="Grammatical gender">
+                <button type="button" onclick="postEntry()">PST</button>
+            </form>     
+        </div>
+        <div>
+            <span>Get RANDOM entry</span>
+            <button type="button" onclick="getRandom()">RNG</button>
+        </div>
+        <div>
+            <span>Get all example sentences</span>
+            <button type="button" onclick="getExamples()">EXAMPLES</button>
+        </div>
+        <div>
+            <span>Get all the data from DB</span>
+            <button type="button" onclick="getAll()">ALL</button>
+        </div>
+        <div>
+            <span>Get all nouns</span>
+            <button type="button" onclick="getNouns()">NOUNS</button>
+        </div>
+    </div>
     <div class="btn-holder">
         <input type="text" id="search-bar" placeholder="Search...">
         <select id="menu">
@@ -28,7 +84,7 @@
         <button onclick="sendRequest()">Search</button>
         <div>
             <div> 
-                <a href="posudjenice.json" download="loanword.json"><button id="json-button" type="submit">JSON</button></a>
+                <a href="posudjenice.json" download="loanword.json"><button id="csv-button" type="submit">JSON</button></a>
                 <a href="posudjenice.csv" download="loanword.csv"><button id="csv-button">CSV</button></a>
                 <a href="schema.json" download="schema.json"><button id="csv-button">Schema</button></a>
                 <button onclick="downloadObjectAsJson()" id="csv-button">JSON search download</button>

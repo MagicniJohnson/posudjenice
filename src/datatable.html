@@ -124,7 +124,123 @@ function generateTable(data) {
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
       }
-    
+
+      async function getAll() {
+        try {
+            const response = await fetch("http://localhost:5000/dumpall");
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+      }
+
+      
+      async function getNouns() {
+        try {
+            const response = await fetch("http://localhost:5000/nouns");
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function getRandom() {
+        try {
+            const response = await fetch("http://localhost:5000/entry");
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+
+    async function getExamples() {
+        try {
+            const response = await fetch("http://localhost:5000/examples");
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function getCroWord() {
+        const resourceId = document.getElementById('resourceInput').value.trim();
+        console.log(resourceId);
+        try {
+            const response = await fetch(`http://localhost:5000/croword/${resourceId}`);
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+
+      }
+
+      async function deleteCroWord() {
+        const resourceId = document.getElementById('deleteInput').value.trim();
+        console.log(resourceId);
+        try {
+            const response = await fetch(`http://localhost:5000/croword/${resourceId}`, {
+                method: 'DELETE',
+                headers: {'Content-Type': 'plain/text'}
+            });
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+
+      }
+
+    async function putCroWord() {
+        const formElement = document.getElementById('putForm');
+        const formData = new FormData(formElement);
+
+        const resourceId = document.getElementById('word.word_cro').value.trim();
+        console.log(resourceId);
+        try {
+            const response = await fetch(`http://localhost:5000/croword/${resourceId}`, {
+                method: 'PUT',
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: {'Content-Type': 'application/json'}
+            });
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    async function postEntry() {
+        const formElement = document.getElementById('postForm');
+        const formData = new FormData(formElement);
+
+        await fetch("http://localhost:5000/entry", {
+            method: 'POST',
+            body: JSON.stringify(Object.fromEntries(formData)),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data.message);
+            // Handle success, update UI, etc.
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle error, show error message, etc.
+        });
+    }
 
     
     

@@ -1,4 +1,15 @@
+#csv-button {
+    border: 1px solid;
+    background-color: white;
+}
 
+#csv-button:hover{
+    background-color: #c0c0c0;
+}
+
+#up-track {
+    background-color: #f0fff0;
+}
 .btn-holder {
     background-color: #98ff98; 
     padding: 10px; 
