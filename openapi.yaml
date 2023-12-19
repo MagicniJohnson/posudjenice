@@ -1,0 +1,268 @@
+openapi: 3.0.3
+info:
+  title: Posudjenice - OpenAPI 3.0
+  version: 3.0.0
+  description: >-
+    This is the API to access the posudjenice dataset by Mihael Radeljic. For
+    more information on the dataset
+
+    visit the github page: https://github.com/MagicniJohnson/posudjenice
+  contact:
+    email: mihaelradelj@gmail.com
+    name: Mihael Radeljic
+    url: https://github.com/MagicniJohnson/posudjenice/blob/main/LICENSE
+  license:
+    name: CC0 1.0 Universal
+    url: https://creativecommons.org/publicdomain/zero/1.0/deed.en
+paths:
+  /croword/{word}:
+    get:
+      tags:
+        - word
+      summary: get the row for a Croatian word from the database
+      description: get an existing row that contains croatian word
+      operationId: updatePet
+      parameters:
+        - name: word
+          in: path
+          description: the word that is retrieved
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              examples:
+                response:
+                  value: >-
+                    {"_id":{"$oid":"655247c76d3973e42ea5bbe3"},"word":{"word_cro":"lumbrela","word_orig_lang":"ombrello"},"definition":{"definition_cro":"kišobran","definition_orig_lang":"kišobran"},"type":"usvojenica","example":"Padala
+                    je kiša, a nisam imala lumbrelu sa
+                    sobom.","orig_lang":"talijanski","type_word":"imenica","gender":"ž"}
+        '404':
+          description: word not found
+    delete:
+      summary: Delete a column containing specified word
+      description: delete an existing row from database containing word
+      operationId: deleteWord
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: word not found
+      tags:
+        - word
+      parameters:
+        - name: word
+          in: path
+          description: the word that is to be deleted
+          required: true
+          schema:
+            type: string
+    put:
+      summary: update the example sentence pertaining to a word
+      description: ''
+      operationId: putWord
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: word not found
+      tags:
+        - word
+      parameters:
+        - name: word
+          in: path
+          description: the word that is to be updated
+          required: true
+          schema:
+            type: string
+        - name: example
+          in: query
+          description: example usage of the word
+          required: false
+          schema:
+            type: string
+  /entry:
+    summary: manipulate with database entries
+    post:
+      summary: create a new column in the database for word
+      description: ''
+      operationId: postWord
+      responses:
+        '200':
+          description: Data successfully added to database
+          content:
+            application/json:
+              examples:
+                response:
+                  value: >-
+                    [{"_id":{"$oid":"655247c76d3973e42ea5bbe3"},"word":{"word_cro":"lumbrela","word_orig_lang":"ombrello"},"definition":{"definition_cro":"kišobran","definition_orig_lang":"kišobran"},"type":"usvojenica","example":"Padala
+                    je kiša, a nisam imala lumbrelu sa
+                    sobom.","orig_lang":"talijanski","type_word":"imenica","gender":"ž"}]
+        '404':
+          description: word not found
+      tags:
+        - entry
+      parameters:
+        - name: word
+          in: query
+          description: the word that is to be updated
+          required: true
+          schema:
+            type: string
+        - name: word_orig_lang
+          in: query
+          description: the loanword in language of origin
+          required: true
+          schema:
+            type: string
+        - name: definition_orig_lang
+          in: query
+          description: the dictionary definiton in language of origin
+          required: true
+          schema:
+            type: string
+        - name: definition_cro
+          in: query
+          description: the dictionary definiton in the Croatian language
+          required: true
+          schema:
+            type: string
+        - name: type_word
+          in: query
+          description: part of speech of the word
+          required: true
+          schema:
+            type: string
+        - name: example
+          in: query
+          description: example usage of the word
+          required: true
+          schema:
+            type: string
+        - name: gender
+          in: query
+          description: grammatical gender in the Croatian language if the word is a noun
+          required: false
+          schema:
+            type: string
+        - name: orig_lang
+          in: query
+          description: language of origin of the loanword
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: type of loanword
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            examples:
+              request:
+                value: >-
+                  {word":{"word_cro":"lumbrela","word_orig_lang":"ombrello"},"definition":{"definition_cro":"kišobran","definition_orig_lang":"kišobran"},"type":"usvojenica","example":"Padala
+                  je kiša, a nisam imala lumbrelu sa
+                  sobom.","orig_lang":"talijanski","type_word":"imenica","gender":"ž"}
+    get:
+      summary: get a random entry
+      description: ''
+      operationId: getEntry
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                response:
+                  value: >-
+                    [{"_id":{"$oid":"655247c76d3973e42ea5bbea"},"word":{"word_cro":"frižider","word_orig_lang":"frigidaire"},"definition":{"definition_cro":"hladnjak","definition_orig_lang":"hladan"},"type":"tuđica","example":"Ne
+                    zaboravljaj zatvarati vrata frižidera, ne zatvaraju se sama
+                    od
+                    sebe!","orig_lang":"francuski","type_word":"imenica","gender":"m"}]
+      tags:
+        - entry
+  /dumpall:
+    summary: Get all the data from the database in JSON
+    get:
+      summary: Fetching all data from DB
+      description: ''
+      operationId: dumpallGet
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                response:
+                  value: >-
+                    [{"_id":{"$oid":"655247c76d3973e42ea5bbe3"},"word":{"word_cro":"lumbrela","word_orig_lang":"ombrello"},"definition":{"definition_cro":"kišobran","definition_orig_lang":"kišobran"},"type":"usvojenica","example":"Padala
+                    je kiša, a nisam imala lumbrelu sa
+                    sobom.","orig_lang":"talijanski","type_word":"imenica","gender":"ž"},
+                    {"_id":{"$oid":"655247c76d3973e42ea5bbe4"},"word":{"word_cro":"čak","word_orig_lang":"çak"},"definition":{"definition_cro":"dapače,
+                    štoviše; za isticanje onome što je
+                    rečeno","definition_orig_lang":"daleko, sve
+                    do"},"type":"usvojenica","example":"Bilo je čak
+                    dobro.","orig_lang":"turski","type_word":"čestica","gender":"NULL"},
+                    {"_id":{"$oid":"655247c76d3973e42ea5bbe5"},"word":{"word_cro":"rendgen","word_orig_lang":"röntgen"},"definition":{"definition_cro":"aparat
+                    za snimanje pomoću rendgenskih
+                    zraka","definition_orig_lang":"Röntgen je
+                    prezime"},"type":"eponim","example":"Rendgen je pokazao da
+                    je slomio ključnu
+                    kost.","orig_lang":"njemački","type_word":"imenica","gender":"m"}]
+      tags:
+        - dump
+  /noun:
+    summary: a path for working with noun entries
+    get:
+      summary: get all entries which are nouns
+      description: ''
+      operationId: getNoun
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                response:
+                  value: >-
+                    [{"_id":{"$oid":"655247c76d3973e42ea5bbe5"},"word":{"word_cro":"rendgen","word_orig_lang":"röntgen"},"definition":{"definition_cro":"aparat
+                    za snimanje pomoću rendgenskih
+                    zraka","definition_orig_lang":"Röntgen je
+                    prezime"},"type":"eponim","example":"Rendgen je pokazao da
+                    je slomio ključnu
+                    kost.","orig_lang":"njemački","type_word":"imenica","gender":"m"},
+
+                    {"_id":{"$oid":"655247c76d3973e42ea5bbe6"},"word":{"word_cro":"auto","word_orig_lang":"automobile"},"definition":{"definition_cro":"motorno
+                    vozilo na dvije osovine i četiri
+                    kotača","definition_orig_lang":"pokretljiv vlastitom
+                    snagom"},"type":"usvojenica","example":"Auto se pokvarilo na
+                    autocesti.","orig_lang":"francuski","type_word":"imenica","gender":"m"}]
+      tags:
+        - noun
+  /examples:
+    summary: fetching example sentences
+    get:
+      summary: get all example sentences
+      description: ''
+      operationId: getExamples
+      responses:
+        default:
+          description: Default error sample response
+          content:
+            application/json:
+              examples:
+                response:
+                  value: |-
+                    [{"example" :
+                    "Bio je čak dobar dan"},
+                    {"example" :
+                    "Tajfun je uništio grad Yokohamu"}
+                    ]
+      tags:
+        - examples
