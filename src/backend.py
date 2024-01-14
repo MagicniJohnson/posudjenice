@@ -6,31 +6,79 @@ import re
 import pandas as pd
 import json
 from bson.json_util import dumps, loads
+import webbrowser
+import json
+from os import environ as env
+from urllib.parse import quote_plus, urlencode
+from authlib.integrations.flask_client import OAuth
+from dotenv import find_dotenv, load_dotenv
+from flask import Flask, redirect, render_template, session, url_for
+
 
 client = MongoClient("mongodb://localhost:27017")
 db = client.otvrac_posudjenice
 posudj = db.posudjenice
 
+login_check = 1
+
+
 app = Flask(__name__)
 api = Api(app)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+app.secret_key = "NmwjAnkdYNKyLNuAzfygGZ4Fn-1h9O_5iM4AZbvxRSGxSLy7jOdO8TrlyudEyOJ5"
+
+oauth = OAuth(app)
+
+oauth.register(
+    "auth0",
+    client_id="Je3NSACtmJ5NG6gLbPm8bw5IMzhZb3Jd",
+    client_secret="NmwjAnkdYNKyLNuAzfygGZ4Fn-1h9O_5iM4AZbvxRSGxSLy7jOdO8TrlyudEyOJ5",
+    client_kwargs={
+        "scope": "openid profile email",
+    },
+    server_metadata_url=f'https://dev-qm81qiwcvb8iormj.us.auth0.com/.well-known/openid-configuration'
+)
+
+
+@app.route("/login",  methods=["GET"])
+def login():
+    if("user" in session):
+         return redirect(url_for("Home"))
+    return oauth.auth0.authorize_redirect(
+        redirect_uri=url_for("callback", _external=True)
+    )
+
+@app.route("/callback", methods=["GET", "POST"])
+def callback():
+    token = oauth.auth0.authorize_access_token()
+    session["user"] = token
+    print(session["user"])
+    return render_template("index.html", session=session.get('user'), pretty=json.dumps(session.get('user'), indent=4))
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    #print(session["user"])
+    return redirect(url_for("Home"))
+
 
 @app.route('/')
 def Home():
-    return ''
+    global login_check
+    return render_template("index.html", session=session.get('user'), pretty=json.dumps(session.get('user'), indent=4))
 
 @app.errorhandler(501)
 def handle_not_implemented(error):
     return "Not implemented.", 501
 
 class WordHTTP(Resource):
-
     def get(self, word):
         global posudj
 
         if not word:
             return 404
-        
+
         queriedSearch = posudj.find_one({'word.word_cro' : word})
         json_data = dumps(queriedSearch)
 
@@ -42,7 +90,7 @@ class WordHTTP(Resource):
             response = Response(status=404, response = 'null')
             response.headers['message'] = 'No such word exists in the database'
             return response
-    
+
     def put(self, word):
         global posudj
         data = request.json
@@ -77,6 +125,55 @@ class WordHTTP(Resource):
             response= Response(status = 404)
             response.headers["message"] = "Deletion failed"
             return response
+def giveContext(json_data):
+        context_data =  '{"@context":{ "@vocab": "http://schema.org/", "gender": "https://schema.org/gender", "orig_lang": "https://schema.org/Language"}},'
+
+        index_open_bracket = json_data.find("[")
+        index_open_brace = json_data.find("{", index_open_bracket)
+
+        # Add your text between "[" and "{"
+        data_with_context = (
+            json_data[:index_open_bracket + 1]
+            + context_data
+            + json_data[index_open_brace:]
+        )
+        return data_with_context
+
+def download_json():
+        global posudj
+        dataDump = posudj.find({})
+
+        if dataDump is None:
+            return Response(status = 404)
+        json_data = dumps(dataDump)
+        data_with_context = giveContext(json_data)
+        response = Response(
+            data_with_context,
+            content_type="application/json",
+            headers={"Content-disposition": "attachment; filename=data.json"}
+        )
+
+        return response
+
+
+def download_csv():
+    global posudj
+    data = list(posudj.find())
+    df = pd.DataFrame(data)
+    csv_data = df.to_csv(index=False)
+
+    response = Response(
+        csv_data,
+        content_type="text/csv",
+        headers={"Content-disposition": "attachment; filename=data.csv"}
+    )
+
+    return response
+
+@app.route("/retrieveall")
+def retrieveall():
+    return download_json()
+
 
 class DatabaseRetrieve(Resource):
     def get(self):
@@ -85,12 +182,13 @@ class DatabaseRetrieve(Resource):
 
         if dataDump is None:
             return Response(status = 404)
-        
+
         json_data = dumps(dataDump)
+        json_data = giveContext(json_data)
         response =Response(status = 200, response = json_data, mimetype="application/json")
         response.headers['message'] = 'Database retrieved'
         return response
-    
+
 class NounRetrieval(Resource):
     def get(self):
         global posudj
@@ -101,8 +199,9 @@ class NounRetrieval(Resource):
 
         if queriedSearch is None:
             return Response(status=404)
-        
+
         json_data = dumps(queriedSearch)
+        json_data = giveContext(json_data)
         response =Response(status = 200, response = json_data, mimetype="application/json")
         response.headers['message'] = 'All nouns retrieved'
         return response
@@ -120,6 +219,7 @@ class ExampleHTTP(Resource):
 
         exampleData = list(queriedData)
         json_data = dumps(exampleData)
+        json_data = giveContext(json_data)
         response = Response(status = 200, response = json_data, mimetype="application/json")
         response.headers['message'] = 'All examples sent'
         return response
@@ -133,10 +233,10 @@ class EntryHTTP(Resource):
         randomEntry = list(posudj.aggregate(pipeline))
 
         json_data = dumps(randomEntry)
-
+        json_data = giveContext(json_data)
         if randomEntry is None:
             return Response(status=404, response= None)
-        
+
         response = Response(status = 200, response=json_data, mimetype="application/json")
         response.headers['message'] = 'Random entry sent'
         return response
@@ -158,7 +258,7 @@ class EntryHTTP(Resource):
             response = Response(status = 404)
             response.headers['message'] = "All fields except gender are mandatory"
             return response
-        
+
         insertableData = {
             "word":{"word_cro":required_fields[0], "word_orig_lang":required_fields[1]},
              "definition":{"definition_cro": required_fields[2], "definition_orig_lang":required_fields[3]},
@@ -175,7 +275,7 @@ class EntryHTTP(Resource):
         response = Response(status = 201, response = jsondata)
         response.headers['message'] = 'Added entry successfully'
         return response
-    
+
 
 class DBSearch(Resource):
     def post(self):
@@ -193,7 +293,7 @@ class DBSearch(Resource):
                 "type_word",
                 "gender"
             ]
-            queriedSearch =posudj.find({"$or" : [{"word.word_cro": {"$regex": f'^{searchTerm}'}}, 
+            queriedSearch =posudj.find({"$or" : [{"word.word_cro": {"$regex": f'^{searchTerm}'}},
                                                  {"word.word_orig_lang": {"$regex": f'^{searchTerm}'}},
                                                  {"definition.definition_cro": {"$regex": f'^{searchTerm}'}},
                                                  {"definition.definition_orig_lang": {"$regex": f'^{searchTerm}'}},
@@ -231,7 +331,7 @@ class downloadCSV(Resource):
             return 'Internal server error', 500
 
 
-    
+
 api.add_resource(DBSearch, "/searchup")
 api.add_resource(downloadCSV, "/downloadCSV")
 api.add_resource(WordHTTP, '/croword/<string:word>')

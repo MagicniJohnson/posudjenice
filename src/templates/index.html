@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<style>
+#csv-button {
+    border: 1px solid;
+    background-color: white;
+}
+
+#csv-button:hover{
+    background-color: #c0c0c0;
+}
+
+#up-track {
+    background-color: #f0fff0;
+}
+.btn-holder {
+    background-color: #98ff98;
+    padding: 10px;
+    text-align: center;
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f0fff0;
+}
+
+div {
+    text-align: center;
+    position: relative;
+}
+
+#search-bar, #menu, button {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+#csv-button {
+    position: relative;
+    justify-content: right;
+    top: 10px;
+    right: 10px;
+    margin-left: 20px;
+}
+
+#json-button {
+    position: relative;
+    top: 10px;
+    right: 10px;
+    margin-left: 20px;
+}
+
+input[type="text"], select {
+    padding: 8px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+</style>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css" type="text/css">
+    <script src="datatable.html"></script>
+    <meta charset="utf-8"/>
+    <meta name="author" content="Mihael Radeljic" />
+    <meta name="descriptions" content="An datapoint consists of a loanword in Croatian and its language of origin,
+    its definition in both croatian and language of origin, the language of origin,
+    type of loanword, part of speech and grammatical gender (if the word is a noun).
+    Also, the type of loanword is also given in type, for more information go to: https://github.com/MagicniJohnson/posudjenice/blob/main/README.md ." />
+
+    <title>Posuđenice</title>
+
+<script src="https://cdn.auth0.com/js/auth0/9.11/auth0.min.js"></script>
+<script type="text/javascript">
+  var auth0Client = new auth0.WebAuth({
+    clientID: '{Je3NSACtmJ5NG6gLbPm8bw5IMzhZb3Jd}',
+    domain: '{dev-qm81qiwcvb8iormj.us.auth0.com}'
+  });
+  auth0Client.crossOriginVerification();
+</script>
+</head>
+<body>
+  <div>
+    {% if session %}
+        <h1>Welcome {{session.userinfo.name}}!</h1>
+        <p><a href="/logout">Logout</a></p>
+        <div><p>This is the login information</p></div>
+        <div style="background-color: orange;"><pre>{{pretty}}</pre></div>
+        <button id="loginButton">  <p><a href="/retrieveall">Osvježi preslike</a></p></button
+    {% else %}
+      <h1>Welcome Guest</h1>
+      <button id="loginButton">  <p><a href="/login">Login</a></p></button
+    {% endif %}
+  <\div>
+  <div>
+    {% if session %}
+    <div id="up-track">Search for loanwords!</div>
+    <div>
+        <div>
+            <form id="getForm>
+                <label for="resourceInput">Enter a croatian word</label>
+                <input type="text" id="resourceInput" placeholder="Input something..." name="resourceInput"></input>
+                <button type="button" onclick="getCroWord()">GET</button>
+            </form>
+        </div>
+        <div>
+            <span>Enter a new example sentence</span>
+            <form id="putForm">
+                <input type="text" id="word.word_cro" placeholder="Input a Croatian word" name="word.word_cro"></input>
+                <input type="text" id="example" placeholder="Input a new example sentence" name="example"></input>
+                <button type="button" onclick="putCroWord()">PUT</button>
+            </form>
+        </div>
+        <div>
+            <form id="deleteForm>
+                <label for="deleteInput">Enter a croatian word</label>
+                <input type="text" id="deleteInput" placeholder="Input something..." name="deleteInput"></input>
+                <button type="button" onclick="deleteCroWord()">DEL</button>
+            </form>
+        </div>
+        <div>
+            <span>Input a new entry</span>
+            <form id="postForm">
+                <input type="text" name="word.word_cro" placeholder="Word (Croatian)"></input>
+                <input type="text" name="word.word_orig_lang" placeholder="Word (Original Language)"></input>
+                <input type="text" name="definition.definition_cro" placeholder="Definition (Croatian)">
+                <input type="text" name="definition.definition_orig_lang" placeholder="Definition (Original Language)">
+                <input type="text" name="type" placeholder="Type of loanword">
+                <input type="text" name="example" placeholder="Example sentence">
+                <input type="text" name="orig_lang" placeholder="Language of origin">
+                <input type="text" name="type_word" placeholder="Part of speech">
+                <input type="text" name="gender" placeholder="Grammatical gender">
+                <button type="button" onclick="postEntry()">PST</button>
+            </form>
+        </div>
+        <div>
+            <span>Get RANDOM entry</span>
+            <button type="button" onclick="getRandom()">RNG</button>
+        </div>
+        <div>
+            <span>Get all example sentences</span>
+            <button type="button" onclick="getExamples()">EXAMPLES</button>
+        </div>
+        <div>
+            <span>Get all the data from DB</span>
+            <button type="button" onclick="getAll()">ALL</button>
+        </div>
+        <div>
+            <span>Get all nouns</span>
+            <button type="button" onclick="getNouns()">NOUNS</button>
+        </div>
+    </div>
+    <div class="btn-holder">
+        <input type="text" id="search-bar" placeholder="Search...">
+        <select id="menu">
+            <option value="wildcard">Wildcard (All)</option>
+            <option value="word.word_cro">Croatian word</option>
+            <option value="word.word_orig_lang">Original word</option>
+            <option value="definition.definition_cro">Croatian definition</option>
+            <option value="definition.definition_orig_lang">Original definition</option>
+            <option value="type">Type</option>
+            <option value="type_word">Part of speech</option>
+            <option value="gender">Gender</option>
+        </select>
+        <button onclick="sendRequest()">Search</button>
+        <div>
+            <div>
+                <a href="schema.json" download="schema.json"><button id="csv-button">Schema</button></a>
+                <button onclick="downloadObjectAsJson()" id="csv-button">JSON search download</button>
+                <button onclick="downloadObjectAsCSV()" id="csv-button">CSV search download</button>
+
+            </div>
+        </div>
+    </div>
+
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Word (Croatian)</th>
+                <th>Word (Original Language)</th>
+                <th>Definition (Croatian)</th>
+                <th>Definition (Original Language)</th>
+                <th>Type</th>
+                <th>Example</th>
+                <th>Original Language</th>
+                <th>Word Type</th>
+                <th>Gender</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+        {% endif %}
+  </div>
+    <script>
+            document.getElementById('loginButton').addEventListener('click', function() {
+                fetch('http://localhost:5000/login', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                });
+            });
+
+            var jsonObject;
+
+            function generateTable(data) {
+                //console.log("Generating table...");
+                //console.log(data);
+                const tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+                tableBody.innerHTML = "";
+                jsonarray = JSON.parse(data)
+                jsonarray.forEach(item => {
+                    const row = tableBody.insertRow();
+
+                    // Define the properties to display in the table
+                    const propertiesToDisplay = [
+                        'word.word_cro',
+                        'word.word_orig_lang',
+                        'definition.definition_cro',
+                        'definition.definition_orig_lang',
+                        'type',
+                        'example',
+                        'orig_lang',
+                        'type_word',
+                        'gender'
+                    ];
+
+                    propertiesToDisplay.forEach(property => {
+                        const cell = row.insertCell();
+                        const nestedProperties = property.split('.');
+                        let nestedValue = item;
+
+                        nestedProperties.forEach(nestedProperty => {
+                            nestedValue = nestedValue[nestedProperty];
+                        });
+
+                        cell.textContent = nestedValue;
+                    });
+                });
+            }
+
+
+                async function sendRequest() {
+                    const searchTerm = document.getElementById('search-bar').value;
+                    const selectedField = document.getElementById('menu').value;
+
+                    try {
+                        const response = await fetch('http://localhost:5000/searchup', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                searchTerm: searchTerm,
+                                selectedField: selectedField,
+                            }),
+                        });
+                        console.log(response);
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+
+                        const data = await response.json();
+                        jsonObject = data;
+                        console.log(jsonObject);
+                        console.log(data)
+                        generateTable(data);
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+
+
+                async function fetchDataAndDownload() {
+                    try {
+                        const response = await fetch('posudjenice.json');
+                        if (!response.ok) {
+                            throw new Error(`Failed to fetch data: ${response.status} ${response.statusText}`);
+                        }
+
+                        const jsonData = await response.json();
+
+                        //downloadJson(jsonObject);
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+
+                async function downloadObjectAsCSV(){
+
+                    fetch('http://localhost:5000/downloadCSV', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(jsonObject),
+                      })
+                      .then(response => {
+                        if (!response.ok) {
+                          throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.blob();
+                      })
+                      .then(blob => {
+                        // Create a download link and trigger the download
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'converted_data.csv';
+                        link.click();
+                      })
+                      .catch(error => {
+                        console.error('Error:', error);
+                      });
+
+                }
+
+                function downloadObjectAsJson(){
+                    exportName = "filter"
+                    var jsonarray = JSON.stringify(JSON.parse(jsonObject));
+                    var dataStr = "data:application/text; charset=utf-8," + encodeURIComponent(jsonarray);
+                    console.log(jsonObject);
+                    console.log(decodeURIComponent(encodeURIComponent(jsonObject)));
+                    var downloadAnchorNode = document.createElement('a');
+                    downloadAnchorNode.setAttribute("href",     dataStr);
+                    downloadAnchorNode.setAttribute("download", exportName + ".json");
+                    document.body.appendChild(downloadAnchorNode);
+                    downloadAnchorNode.click();
+                    downloadAnchorNode.remove();
+                  }
+
+                  async function getAll() {
+                    try {
+                        const response = await fetch("http://localhost:5000/dumpall");
+                        const data = await response.json();
+                        console.log(data);
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                  }
+
+
+                  async function getNouns() {
+                    try {
+                        const response = await fetch("http://localhost:5000/nouns");
+                        const data = await response.json();
+                        console.log(data);
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+
+                async function getRandom() {
+                    try {
+                        const response = await fetch("http://localhost:5000/entry");
+                        const data = await response.json();
+                        console.log(data);
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+
+
+                async function getExamples() {
+                    try {
+                        const response = await fetch("http://localhost:5000/examples");
+                        const data = await response.json();
+                        console.log(data);
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+
+                async function getCroWord() {
+                    const resourceId = document.getElementById('resourceInput').value.trim();
+                    console.log(resourceId);
+                    try {
+                        const response = await fetch(`http://localhost:5000/croword/${resourceId}`);
+                        const data = await response.json();
+                        console.log(data);
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+
+                  }
+
+                  async function deleteCroWord() {
+                    const resourceId = document.getElementById('deleteInput').value.trim();
+                    console.log(resourceId);
+                    try {
+                        const response = await fetch(`http://localhost:5000/croword/${resourceId}`, {
+                            method: 'DELETE',
+                            headers: {'Content-Type': 'plain/text'}
+                        });
+                        const data = await response.json();
+                        console.log(data);
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+
+                  }
+
+                async function putCroWord() {
+                    const formElement = document.getElementById('putForm');
+                    const formData = new FormData(formElement);
+
+                    const resourceId = document.getElementById('word.word_cro').value.trim();
+                    console.log(resourceId);
+                    try {
+                        const response = await fetch(`http://localhost:5000/croword/${resourceId}`, {
+                            method: 'PUT',
+                            body: JSON.stringify(Object.fromEntries(formData)),
+                            headers: {'Content-Type': 'application/json'}
+                        });
+                        const data = await response.json();
+                        console.log(data);
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+
+                async function postEntry() {
+                    const formElement = document.getElementById('postForm');
+                    const formData = new FormData(formElement);
+
+                    await fetch("http://localhost:5000/entry", {
+                        method: 'POST',
+                        body: JSON.stringify(Object.fromEntries(formData)),
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data.message);
+                        // Handle success, update UI, etc.
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Handle error, show error message, etc.
+                    });
+                }
+
+        </script>
+</body>
+</html>
